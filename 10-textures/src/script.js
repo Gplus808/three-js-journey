@@ -3,16 +3,54 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 
 
 //Texures
-const image = new Image()
-const texture = new THREE.Texture(image)
-texture.colorSpace = THREE.SRGBColorSpace
+const loadingManager = new THREE.LoadingManager()
 
-
-image.onload = () => {
-    texture.needsUpdate = true
+loadingManager.onStart = () => {
+    console.log('onStart')
 }
 
-image.src = 'textures/door/color.jpg'
+loadingManager.onLoad = () => {
+    console.log('onLoad')
+}
+
+loadingManager.onProgress = () => {
+    console.log('onProgress')
+}
+
+loadingManager.onError = () => {
+    console.log('onError')
+}
+
+
+
+const textureLoader = new THREE.TextureLoader(loadingManager)
+const colorTexture = textureLoader.load('/textures/door/color.jpg')
+const alphaTexture = textureLoader.load('/textures/door/alpha.jpg')
+const heightTexture = textureLoader.load('/textures/door/height.jpg')
+const normalTexture = textureLoader.load('/textures/door/normal.jpg')
+const ambientOcclusionTexture = textureLoader.load('/textures/door/ambientOcclusion.jpg')
+const metalnessTexture = textureLoader.load('/textures/door/metalness.jpg')
+const roughnessTexture = textureLoader.load('/textures/door/roughness.jpg')
+
+colorTexture.repeat.x = 2
+colorTexture.repeat.y = 3
+colorTexture.wrapS = THREE.RepeatWrapping
+colorTexture.wrapT = THREE.RepeatWrapping
+
+colorTexture.offset.x = 0.5
+colorTexture.offset.y = 0.5
+
+colorTexture.rotation = 1
+
+
+// colorSpace to THREE.SRGBColorSpace
+
+
+// image.onload = () => {
+//     texture.needsUpdate = true
+// }
+
+// image.src = 'textures/door/color.jpg'
 
 /**
  * Base
@@ -27,7 +65,7 @@ const scene = new THREE.Scene()
  * Object
  */
 const geometry = new THREE.BoxGeometry(1, 1, 1)
-const material = new THREE.MeshBasicMaterial({ map: texture})
+const material = new THREE.MeshBasicMaterial({ map: colorTexture})
 const mesh = new THREE.Mesh(geometry, material)
 scene.add(mesh)
 
