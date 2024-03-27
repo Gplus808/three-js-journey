@@ -10,22 +10,22 @@ const canvas = document.querySelector('canvas.webgl')
 // Scene
 const scene = new THREE.Scene()
 
+
+//Objects
+const material = new THREE.MeshBasicMaterial()
+
 const boxGeometry = new THREE.BoxGeometry(1, 1, 0.01)
-const boxMaterial = new THREE.MeshBasicMaterial()
-const boxMesh = new THREE.Mesh(boxGeometry, boxMaterial)
-scene.add(boxMesh)
+const boxMesh = new THREE.Mesh(boxGeometry, material)
 
 const torusGeometry = new THREE.TorusGeometry(0.3, 0.18)
-const torusMaterial = new THREE.MeshBasicMaterial()
-const torusMesh = new THREE.Mesh(torusGeometry, torusMaterial)
+const torusMesh = new THREE.Mesh(torusGeometry, material)
 torusMesh.position.x = 1.5
-scene.add(torusMesh)
 
 const sphereGeometry = new THREE.SphereGeometry(0.5)
-const sphereMaterial = new THREE.MeshBasicMaterial()
-const sphereMesh = new THREE.Mesh(sphereGeometry, sphereMaterial)
+const sphereMesh = new THREE.Mesh(sphereGeometry, material)
 sphereMesh.position.x = - 1.5
-scene.add(sphereMesh)
+
+scene.add(boxMesh, torusMesh, sphereMesh)
 
 /**
  * Sizes
@@ -82,6 +82,15 @@ const tick = () =>
 {
     const elapsedTime = clock.getElapsedTime()
 
+    //Update Objects
+    boxMesh.rotation.y = 0.1 * elapsedTime
+    sphereMesh.rotation.y = 0.1 * elapsedTime
+    torusMesh.rotation.y = 0.1 * elapsedTime
+
+    boxMesh.rotation.x =  - 0.15 * elapsedTime
+    sphereMesh.rotation.x = - 0.15 * elapsedTime
+    torusMesh.rotation.x = - 0.15 * elapsedTime
+    
     // Update controls
     controls.update()
 
