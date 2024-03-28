@@ -10,9 +10,34 @@ const canvas = document.querySelector('canvas.webgl')
 // Scene
 const scene = new THREE.Scene()
 
+const textureLoader = new THREE.TextureLoader()
+
+const doorColorTexture = textureLoader.load('./textures/door/color.jpg')
+const doorAlphaTexture = textureLoader.load('./textures/door/alpha.jpg')
+const doorAmbientOcclusionTexture = textureLoader.load('./textures/door/ambientOcclusion.jpg')
+const doorHeightTexture = textureLoader.load('./textures/door/height.jpg')
+const doorNormalTexture = textureLoader.load('./textures/door/normal.jpg')
+const doorMetalnessTexture = textureLoader.load('./textures/door/metalness.jpg')
+const doorRoughnessTexture = textureLoader.load('./textures/door/roughness.jpg')
+const matcapTexture = textureLoader.load('./textures/matcaps/1.png')
+const gradientTexture = textureLoader.load('./textures/gradients/3.jpg')
+
+doorColorTexture.colorSpace = THREE.SRGBColorSpace
+matcapTexture.colorSpace = THREE.SRGBColorSpace
+
 
 //Objects
-const material = new THREE.MeshBasicMaterial()
+// const material = new THREE.MeshBasicMaterial()
+// // material.map = doorColorTexture
+// // material.color = new THREE.Color('green')
+// // material.wireframe = true
+// material.transparent = true
+// material.opacity = 0.5
+// material.alphaMap = doorAlphaTexture
+// material.side = THREE.DoubleSide
+
+//MeshNormalMaterial
+const material = new THREE.MeshNormalMaterial()
 
 const boxGeometry = new THREE.BoxGeometry(1, 1, 0.01)
 const boxMesh = new THREE.Mesh(boxGeometry, material)
