@@ -16,44 +16,75 @@ const canvas = document.querySelector('canvas.webgl')
 // Scene
 const scene = new THREE.Scene()
 
+// // Axes helper
+// const axesHelper = new THREE.AxesHelper()
+// scene.add(axesHelper)
+
 /**
  * Textures
  */
 const textureLoader = new THREE.TextureLoader()
+const matcapTexture = textureLoader.load('/textures/matcaps/10.png')
+matcapTexture.colorSpace = THREE.SRGBColorSpace
+console.log(matcapTexture);
+
+
 
 
 //Font
 const fontLoader = new FontLoader()
 
-fontLoader.load('/fonts/helvetiker_regular.typeface.json', (font) => {
-    const textGeometry = new TextGeometry('Hello Three.js',
-    {
+fontLoader.load('/fonts/Kanit_Italic.json', (font) => {
+    const textGeometry = new TextGeometry('dsplaced.', {
         font: font,
         size: 0.5,
         height: 0.2,
-        cureveSegments:12,
-        bevelEnabled:true,
-        bevelThickness: 0.03,
-        bevelSize: 0.02,
+        curveSegments: 10,
+        bevelEnabled: true,
+        bevelThickness: 0.01, // Adjusted
+        bevelSize: 0.02,      // Adjusted
         bevelOffset: 0,
-        bevelSegments: 5
-    })
-    const textMaterial = new THREE.MeshBasicMaterial()
+        bevelSegments: 10     // Adjusted
+    });
+    // textGeometry.computeBoundingBox()
+    // textGeometry.translate(
+    //     - (textGeometry.boundingBox.max.x - 0.02) * 0.5,
+    //     - (textGeometry.boundingBox.max.y - 0.02) * 0.5,
+    //     - (textGeometry.boundingBox.max.z - 0.03) * 0.5
+    // )
+    
+
+    
+    textGeometry.center()
+
+    textGeometry.computeBoundingBox()
+    console.log(textGeometry.boundingBox);
+
+    
+    const textMaterial = new THREE.MeshMatcapMaterial()
+    textMaterial.matcap = matcapTexture
+
+    
     const text = new THREE.Mesh(textGeometry, textMaterial)
+
+    textGeometry.center()
+    textGeometry.computeVertexNormals();
     scene.add(text)
+
 })
 
 
+scene.background = new THREE.Color('white'); 
 
-/**
- * Object
- */
-const cube = new THREE.Mesh(
-    new THREE.BoxGeometry(1, 1, 1),
-    new THREE.MeshBasicMaterial()
-)
+//Lights
+const ambientLight = new THREE.AmbientLight(0xffffff, 1)
+scene.add(ambientLight)
 
-scene.add(cube)
+const pointLight = new THREE.PointLight(0xffffff, 100000)
+pointLight.position.x = 1.5
+pointLight.position.y = 1.5
+pointLight.position.z = 4
+scene.add(pointLight)
 
 /**
  * Sizes
@@ -105,6 +136,7 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
  * Animate
  */
 const clock = new THREE.Clock()
+
 
 const tick = () =>
 {
