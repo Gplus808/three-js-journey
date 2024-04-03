@@ -24,7 +24,7 @@ const scene = new THREE.Scene()
  * Textures
  */
 const textureLoader = new THREE.TextureLoader()
-const matcapTexture = textureLoader.load('/textures/matcaps/10.png')
+const matcapTexture = textureLoader.load('/textures/matcaps/11.png')
 matcapTexture.colorSpace = THREE.SRGBColorSpace
 console.log(matcapTexture);
 
@@ -61,20 +61,48 @@ fontLoader.load('/fonts/Kanit_Italic.json', (font) => {
     console.log(textGeometry.boundingBox);
 
     
-    const textMaterial = new THREE.MeshMatcapMaterial()
-    textMaterial.matcap = matcapTexture
+    const material = new THREE.MeshMatcapMaterial()
+    material.matcap = matcapTexture
+
+    //Clearcoat
+    material.clearcoat = 0
+    material.clearcoatRoughness = 0
+    gui.add(material, 'clearcoat').min(0).max(1).step(0.0001)
+    gui.add(material, 'clearcoatRoughness').min(0).max(1).step(0.0001)
 
     
-    const text = new THREE.Mesh(textGeometry, textMaterial)
+    const text = new THREE.Mesh(textGeometry, material)
 
     textGeometry.center()
     textGeometry.computeVertexNormals();
     scene.add(text)
+    console.time('donut')
+
+    const donutGeometry = new THREE.TorusGeometry(0.3, 0.2, 20, 45)
+
+    
+for (let i = 0; i < 200; i++) {
+    const donut = new THREE.Mesh(donutGeometry, material)
+
+    donut.position.x = (Math.random() - 0.5) * 10
+    donut.position.y = (Math.random() - 0.5) * 10
+    donut.position.z = (Math.random() - 0.5) * 10
+
+    donut.rotation.x = Math.random() * Math.PI
+    donut.rotation.y = Math.random() * Math.PI
+
+    const scale = Math.random()
+    donut.scale.set(scale, scale, scale)
+
+    scene.add(donut)
+}
+
+console.timeEnd('donut')
 
 })
 
 
-scene.background = new THREE.Color('white'); 
+scene.background = new THREE.Color('lightgray'); 
 
 //Lights
 const ambientLight = new THREE.AmbientLight(0xffffff, 1)
@@ -83,7 +111,7 @@ scene.add(ambientLight)
 const pointLight = new THREE.PointLight(0xffffff, 100000)
 pointLight.position.x = 1.5
 pointLight.position.y = 1.5
-pointLight.position.z = 4
+pointLight.position.z = 20
 scene.add(pointLight)
 
 /**
@@ -116,7 +144,7 @@ window.addEventListener('resize', () =>
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
 camera.position.x = 1
 camera.position.y = 1
-camera.position.z = 2
+camera.position.z = 5
 scene.add(camera)
 
 // Controls
