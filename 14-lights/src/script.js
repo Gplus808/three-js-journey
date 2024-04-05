@@ -1,6 +1,8 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import GUI from 'lil-gui'
+import { RectAreaLight } from 'three'
+import { RectAreaLightHelper } from 'three/examples/jsm/helpers/RectAreaLightHelper.js'
 
 /**
  * Base
@@ -17,14 +19,43 @@ const scene = new THREE.Scene()
 /**
  * Lights
  */
-const ambientLight = new THREE.AmbientLight(0xffffff, 1.5)
-scene.add(ambientLight)
+const ambientLight = new THREE.AmbientLight(0xffffff, 1)
+// scene.add(ambientLight)
 
-const pointLight = new THREE.PointLight(0xffffff, 50)
+gui.add(ambientLight, 'intensity').min(0).max(3).step(0.5)
+
+const directionalLight = new THREE.DirectionalLight(0x00fffc, 0.3)
+directionalLight.position.set(1, 0.25, 0)
+scene.add(directionalLight)
+
+const pointLight = new THREE.PointLight(0xff9000, 0.1)
 pointLight.position.x = 2
 pointLight.position.y = 3
 pointLight.position.z = 4
 scene.add(pointLight)
+
+const hemisphereLight = new THREE.HemisphereLight(0xff0000, 0x0000ff, 3)
+scene.add(hemisphereLight)
+
+const rectAreaLight = new RectAreaLight(0x4e00ff, 10, 6, 1)
+rectAreaLight.position.z = 3
+scene.add(rectAreaLight)
+
+const spotLight = new THREE.SpotLight(0x78ff00, 4.5, 10, Math.PI * 0.1, 0.25, 1)
+spotLight.position.set(0, 2 ,-1)
+scene.add(spotLight)
+
+spotLight.target.position.x = - 0.75
+scene.add(spotLight.target)
+
+const spotLightHelper = new THREE.SpotLightHelper(spotLight)
+scene.add(spotLightHelper)
+
+const pointLightHelper = new THREE.PointLightHelper(pointLight)
+scene.add(pointLightHelper)
+
+const rectAreaLightHelper = new RectAreaLightHelper(rectAreaLight)
+scene.add(rectAreaLightHelper)
 
 /**
  * Objects
@@ -32,6 +63,7 @@ scene.add(pointLight)
 // Material
 const material = new THREE.MeshStandardMaterial()
 material.roughness = 0.4
+// material.metalness = 1
 
 // Objects
 const sphere = new THREE.Mesh(
