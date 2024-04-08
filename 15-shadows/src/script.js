@@ -31,6 +31,12 @@ gui.add(directionalLight.position, 'y').min(- 5).max(5).step(0.001)
 gui.add(directionalLight.position, 'z').min(- 5).max(5).step(0.001)
 scene.add(directionalLight)
 
+directionalLight.castShadow = true
+
+directionalLight.shadow.mapSize.width = 5000
+directionalLight.shadow.mapSize.height = 5000
+
+
 /**
  * Materials
  */
@@ -47,6 +53,8 @@ const sphere = new THREE.Mesh(
     material
 )
 
+sphere.castShadow = true
+
 const plane = new THREE.Mesh(
     new THREE.PlaneGeometry(5, 5),
     material
@@ -55,6 +63,8 @@ plane.rotation.x = - Math.PI * 0.5
 plane.position.y = - 0.5
 
 scene.add(sphere, plane)
+
+plane.receiveShadow = true
 
 /**
  * Sizes
@@ -101,6 +111,8 @@ const renderer = new THREE.WebGLRenderer({
 })
 renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+
+renderer.shadowMap.enabled = true
 
 /**
  * Animate
