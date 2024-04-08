@@ -2,6 +2,14 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import GUI from 'lil-gui'
 
+
+//Textures
+const textureLaoder = new THREE.TextureLoader()
+const bakedShadow = textureLaoder.load('/textures/bakedShadow.jpg')
+const simpleShadow = textureLaoder.load('/textures/simpleShadow.jpg')
+bakedShadow.colorSpace = THREE.SRGBColorSpace
+
+
 /**
  * Base
  */
@@ -74,8 +82,8 @@ const pointLight = new THREE.PointLight(0xffffff, 2.7)
 pointLight.castShadow = true
 pointLight.shadow.mapSize.width = 1024
 pointLight.shadow.mapSize.height = 1024
-pointLight.camera.near = 0.1
-pointLight.camera.far = 5
+pointLight.shadow.camera.near = 0.1
+pointLight.shadow.camera.far = 5
 pointLight.position.set(1, 1, 0)
 scene.add(pointLight)
 
@@ -110,6 +118,19 @@ plane.position.y = - 0.5
 scene.add(sphere, plane)
 
 plane.receiveShadow = true
+
+const sphereShadow = new THREE.Mesh(
+    new THREE.PlaneGeometry(1.5, 1.5),
+    new THREE.MeshBasicMaterial({
+        color: 0x000000,
+        transparent: true,
+        alphaMap: simpleShadow
+    })
+)
+sphereShadow.rotation.x = - Math.PI * 0.5
+sphereShadow.position.y = plane.position.y + 0.001
+
+scene.add(sphere, sphereShadow, plane)
 
 /**
  * Sizes
@@ -157,7 +178,7 @@ const renderer = new THREE.WebGLRenderer({
 renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
-renderer.shadowMap.enabled = true
+renderer.shadowMap.enabled = false
 renderer.shadowMap.type = THREE.PCFShadowMap
 
 /**
@@ -168,6 +189,16 @@ const clock = new THREE.Clock()
 const tick = () =>
 {
     const elapsedTime = clock.getElapsedTime()
+
+    //updateSphere
+    sphere.position.x = Math.cos(elapsedTime) * 1.5
+    sphere.position.z = Math.sin(elapsedTime) * 1.5
+    sphere.position.y = Math.abs(Math.sin(elapsedTime * 3))
+
+    //Update SHadow
+    sphereShadow.position.x = sphere.position.x
+    sphereShadow.position.z = sphere.position.z
+    sphereShadow.material.opacity = 1 - sphere.position.y * 0.3
 
     // Update controls
     controls.update()
