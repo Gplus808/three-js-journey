@@ -20,7 +20,10 @@ const scene = new THREE.Scene()
 const textureLoader = new THREE.TextureLoader()
 
 //Particles
-const particlesGeometry = new THREE.SphereGeometry(1, 32, 32)
+const particlesGeometry = new THREE.BufferGeometry()
+const count = 500
+
+const positions = new Float32Array(count * 3 )
 
 //Material
 const particlesMaterial = new THREE.PointsMaterial({
