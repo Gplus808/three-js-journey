@@ -19,22 +19,34 @@ const scene = new THREE.Scene()
  */
 const textureLoader = new THREE.TextureLoader()
 
-//Particles
-const particlesGeometry = new THREE.BufferGeometry()
+//Particles Geomotery
+
+const particlesGeometry = new THREE.BufferGeometry(1, 32, 32)
 const count = 500
 
-const positions = new Float32Array(count * 3 )
+const positions = new Float32Array(count * 3)
+
+for (let i = 0; i < count * 3; i++) {
+    positions[i] = (Math.random() - 0.5) * 4
+}
+
+particlesGeometry.setAttribute(
+    'position',
+    new THREE.BufferAttribute(positions, 3)
+)
 
 //Material
+
 const particlesMaterial = new THREE.PointsMaterial({
     size: 0.02,
-    sizeAttenuation: true
+    sizeAttenuation: true,
+    color: 'red'
 })
 
 //Points
+
 const particles = new THREE.Points(particlesGeometry, particlesMaterial)
 scene.add(particles)
-
 
 /**
  * Sizes
